@@ -5,6 +5,7 @@ import uploadOnCloudinary from "../utils/cloudinary.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 
+//generate access and refreshTokens
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     //user Instance
@@ -29,7 +30,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
     );
   }
 };
-
+//register user
 const registerUser = asyncHandler(async (req, res) => {
   //get details from user (frontend)
   //validation if email is correct -not empty fields
@@ -204,7 +205,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     req.user._id,
     {
       $set: {
-        refreshToken: undefined,
+        refreshToken: null,
       },
     },
     {
@@ -227,7 +228,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   )
 });
-
+// refresh access token
 const refreshAccessToken=asyncHandler(async(req,res)=>{
   //access refreshtoken from cookies
   const incomingRefreshToken=req.cookies.refreshToken || req.body.refreshToken
@@ -281,4 +282,33 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
   }
 
 })
+
+//ChaneCurrentPassword
+const changeCurrentPassword = asyncHandler(async(req,res)=>{
+  //take data from frontend
+  const {oldPassword, newPassword } =req.body 
+
+  //we've access to req.user using authmiddleware (verify jwt)
+  const user= await User.findById(req.user?._id)
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
+
+  //if password is not correct 
+  if(!isPasswordCorrect){
+    throw new ApiError(400 , "Invalid Password")
+  }
+
+  //password is corect set newpassword
+  user.password = newPassword
+
+  //save user
+  await user.save({validateBeforeSave : false })
+
+  //send response 
+  return res
+  .status(200)
+  .json(new ApiResponse())
+
+})
+
+//get access of currentuser 
 export { registerUser, loginUser, logoutUser ,refreshAccessToken};
