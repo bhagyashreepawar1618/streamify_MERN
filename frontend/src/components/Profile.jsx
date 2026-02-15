@@ -1,15 +1,34 @@
-import React from "react";
-
+import { useUser } from "../contexts/User.context.jsx";
+import { Link } from "react-router-dom";
 const Profile = () => {
-  // 🔥 Dummy Data (later replace with backend data)
-  const user = {
-    fullname: "Harsh Sharma",
-    email: "harsh@gmail.com",
-    username: "harshyt",
-    avtar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
-    coverImage: "https://images.unsplash.com/photo-1503264116251-35a269479413",
-  };
+  //we've set data into user after login
+  const { user } = useUser();
 
+  //if user is not logged in
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
+        <div className="bg-[#121212] border border-red-900/40 rounded-2xl p-10 text-center shadow-xl max-w-md w-full">
+          <h2 className="text-3xl font-bold text-red-600 mb-4">
+            Access Denied
+          </h2>
+
+          <p className="text-gray-400 mb-6">
+            Please login first to view your profile.
+          </p>
+
+          <Link
+            to="/login"
+            className="inline-block px-6 py-3 bg-red-700 hover:bg-red-800 transition rounded-lg font-semibold"
+          >
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  //if user is looged in
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Cover Section */}

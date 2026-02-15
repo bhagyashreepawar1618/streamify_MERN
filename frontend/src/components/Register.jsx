@@ -47,7 +47,14 @@ const Register = () => {
         data
       );
 
-      console.log("response from backend is=", response);
+      setFormData({
+        fullname: "",
+        email: "",
+        username: "",
+        password: "",
+      });
+
+      alert("User Registered Successfully..!!!");
     } catch (error) {
       console.log("Error occured", error);
     }

@@ -1,6 +1,9 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useUser } from "../contexts/User.context.jsx";
 
 const Login = () => {
+  const { setUser } = useUser();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -13,10 +16,33 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    // yaha tum API call karogi
+
+    //api call
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/users/login",
+        {
+          username: formData.username,
+          password: formData.password,
+        }
+      );
+
+      setFormData({
+        username: "",
+        password: "",
+      });
+
+      console.log("response from backend is=", response.data.data.user);
+
+      setUser(response.data.data.user);
+      alert("User is logged in successfully..!!");
+    } catch (error) {
+      console.log("Error occured while login the user ", error);
+    }
   };
 
   return (
