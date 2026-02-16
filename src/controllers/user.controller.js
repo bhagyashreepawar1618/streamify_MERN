@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
+import { subscribe } from "diagnostics_channel";
 
 //generate access and refreshTokens
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -408,5 +409,78 @@ const updateCoverImage = asyncHandler(async(req,res)=>{
   return res
   .status(200)
   .json(new ApiResponse(200, user , " CoverImage uploaded successfully"))
+})
+
+//get user information for profile
+const getUserChannelProfile=asyncHandler(async(req,res)=>{
+  const {username} =req.params
+
+  //if username is not present
+  if(!username?.trim){
+    throw new ApiError(400,"Username is missing")
+  }
+
+  //find user in database
+  const channel = await User.aggregate([
+    {
+      $match : username?.toLowerCase()
+    },
+    {
+      $lookup : {
+        from : "subscription",
+        localField :"_id",
+        foreignField : "channel",
+        as : "Subscribers"
+      }
+    },
+    {
+      $lookup:{
+        from :"subscription",
+        localField : "_id",
+        foreignField : "subscriber",
+        as : "subscribeTo"
+      }
+    },
+    {
+      $addFields :{
+        subscribersCount : {
+          $size :"$subsribers"
+        },
+        channelsSubscribedToCount :{
+          $size :"subscribeTo"
+        },
+        
+        isSubscribed :{
+            $cond : {
+              if:{$in : [req.user?._id,"$subscribers.subscriber"]},
+              then : true,
+              else : false
+            }
+        }
+      }
+    },
+    {
+      $project :{
+        fullname: 1,
+        username :1,
+        subscribersCount :1,
+        channelsSubscribedToCount:1,
+        isSubscribed:1,
+        email:1,
+        avtar:1,
+        avtar:1
+      }
+    }
+  ])
+
+  if(!channel?.length){
+    throw new ApiError(404 ,"Channel does not exist")
+  } 
+
+  return res.status(200)
+  .json (
+    new ApiResponse(200, channel[0], "User channel fetched successfully..!!")
+  )
+
 })
 export { registerUser, loginUser, logoutUser ,refreshAccessToken , changeCurrentPassword,getCurrentUser};
