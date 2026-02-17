@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useUser } from "../../contexts/User.context.jsx";
 import { Link } from "react-router-dom";
+import axios from "axios";
 const UpdateProfile = () => {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
+  let newavtar;
+  let newcover;
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
@@ -19,12 +22,70 @@ const UpdateProfile = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Updated Data:", formData);
-    console.log("Avtar:", avtar);
-    console.log("CoverImage:", coverImage);
+    //backend api call
+    try {
+      const response = await axios.patch(
+        "http://localhost:8000/api/v1/users/update-account",
+        {
+          fullname: formData.fullname,
+          email: formData.email,
+          username: formData.username,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log("User details sent successfully ,", response);
+
+      //for avatar update
+      if (avtar) {
+        const avtardata = new FormData();
+        avtardata.append("avtar", avtar);
+
+        const newdata = await axios.patch(
+          "http://localhost:8000/api/v1/users/avtar-update",
+          avtardata,
+          {
+            withCredentials: true,
+          }
+        );
+
+        newavtar = newdata.data.data.avtar;
+      }
+
+      //update coverImage
+      if (coverImage) {
+        const coverdata = new FormData();
+
+        coverdata.append("coverImage", coverImage);
+
+        const newdata = await axios.patch(
+          "http://localhost:8000/api/v1/users/coverImage-update",
+          coverdata,
+          {
+            withCredentials: true,
+          }
+        );
+        console.log("newdata=", newdata.data.data.coverImage);
+        newcover = newdata.data.data.coverImage;
+      }
+    } catch (error) {
+      console.log("Error occured while updating user details", error);
+    }
+
+    setUser({
+      fullname: formData.fullname,
+      username: formData.username,
+      email: formData.email,
+      avtar: newavtar,
+      coverImage: newcover,
+    });
+
+    alert("User Profile Updated Successfully.!!");
   };
 
   if (!user) {
