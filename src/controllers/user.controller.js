@@ -4,7 +4,6 @@ import { User } from "../models/user.model.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import { subscribe } from "diagnostics_channel";
 import mongoose from "mongoose";
 
 //generate access and refreshTokens
@@ -311,7 +310,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 
 //get access of currentuser
 const getCurrentUser = asyncHandler(async (req, res) => {
-  return req
+  return res
     .status(200)
     .json(200, req.user, "Current user Fetched Successfully..!!");
 });
@@ -539,6 +538,9 @@ export {
   registerUser,
   loginUser,
   logoutUser,
+  updateAvtar,
+  updateAccountDetails,
+  updateCoverImage,
   refreshAccessToken,
   changeCurrentPassword,
   getCurrentUser,
