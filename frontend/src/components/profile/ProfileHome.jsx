@@ -1,8 +1,23 @@
+import axios from "axios";
 import { useUser } from "../../contexts/User.context.jsx";
 import { Link } from "react-router-dom";
 const Profile = () => {
   //we've set data into user after login
   const { user } = useUser();
+
+  const handleLogout = async () => {
+    console.log("you are going to logout..");
+    //backend call
+    const response = await axios.post(
+      "http://localhost:8000/api/v1/users/logout",
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+
+    alert("User has been log out successfully..!!");
+  };
 
   //if user is not logged in
   if (!user) {
@@ -91,6 +106,17 @@ const Profile = () => {
             architecture using modern technologies.
           </p>
         </div>
+      </div>
+
+      {/*LOGOUT BUTTON */}
+      <div className="flex justify-center">
+        <button
+          onClick={handleLogout}
+          className="px-5 py-2 bg-red-700 hover:bg-red-800 
+                    rounded-lg font-semibold text-white cursor-pointer"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
