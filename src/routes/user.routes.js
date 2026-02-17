@@ -4,14 +4,23 @@ import {
   loginUser,
   logoutUser,
   registerUser,
-  refreshAccessToken
+  refreshAccessToken,
+  changeCurrentPassword,
+  getCurrentUser,
+  updateAccountDetails,
+  updateAvtar,
+  updateCoverImage,
+  getUserChannelProfile,
+  getUserWatchedHistory,
 } from "../controllers/user.controller.js";
 
 const router = Router();
 
 import { upload } from "../middlewares/multer.middleware.js";
+import UpdateProfile from "../../Frontend/src/components/UpdateProfile.jsx";
 
 //middleware code here
+//register route
 router.route("/register").post(
   //middleware of multer
   //used array because we have uploaded 2 filelds
@@ -28,10 +37,38 @@ router.route("/register").post(
   registerUser
 );
 
+//login user
 router.route("/login").post(loginUser);
 
 //secured routes
 router.route("/logout").post(verifyJWT, logoutUser);
 
-router.route("/refreshToken").post(refreshAccessToken )
+//refresh access token
+router.route("/refreshToken").post(refreshAccessToken);
+
+//change password
+router.route("/change-password").post(verifyJWT, changeCurrentPassword);
+
+//get current user
+router.route("/get-current-user").get(verifyJWT, getCurrentUser);
+
+//update account details
+router.route("update-account").patch(verifyJWT, updateAccountDetails);
+
+//update avtar
+router
+  .route("/avtar-update")
+  .patch(verifyJWT, upload.single("avtar"), updateAvtar);
+
+//update coverimage
+router
+  .route("coverImage-update")
+  .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
+
+//getchannel profile
+router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
+
+//watch history
+router.route("/history").get(verifyJWT, getUserWatchedHistory);
+
 export default router;
