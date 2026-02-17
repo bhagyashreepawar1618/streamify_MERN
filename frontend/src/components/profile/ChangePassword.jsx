@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useUser } from "../../contexts/User.context";
 import { Link } from "react-router-dom";
+import axios from "axios";
 const ChangePassword = () => {
   const { user } = useUser();
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ const ChangePassword = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.newPassword !== formData.confirmPassword) {
@@ -28,6 +29,29 @@ const ChangePassword = () => {
     console.log("New Password:", formData.newPassword);
 
     //backend api call here
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/users/change-password",
+        {
+          oldPassword: formData.oldPassword,
+          newPassword: formData.newPassword,
+          confirmPassword: formData.confirmPassword,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      alert("Password Updated Successfulyy..!!");
+      setFormData({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (error) {
+      console.log("error occured while updating password..", error);
+    }
   };
 
   if (!user) {
