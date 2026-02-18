@@ -6,18 +6,17 @@ import {
   registerUser,
   refreshAccessToken,
   changeCurrentPassword,
-  getCurrentUser,
   updateAccountDetails,
   updateAvtar,
   updateCoverImage,
   getUserChannelProfile,
   getUserWatchedHistory,
+  uploadVideos,
 } from "../controllers/user.controller.js";
 
 const router = Router();
 
 import { upload } from "../middlewares/multer.middleware.js";
-import UpdateProfile from "../../Frontend/src/components/UpdateProfile.jsx";
 
 //middleware code here
 //register route
@@ -49,11 +48,8 @@ router.route("/refreshToken").post(refreshAccessToken);
 //change password
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 
-//get current user
-router.route("/get-current-user").get(verifyJWT, getCurrentUser);
-
 //update account details
-router.route("update-account").patch(verifyJWT, updateAccountDetails);
+router.route("/update-account").patch(verifyJWT, updateAccountDetails);
 
 //update avtar
 router
@@ -62,7 +58,7 @@ router
 
 //update coverimage
 router
-  .route("coverImage-update")
+  .route("/coverImage-update")
   .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
 
 //getchannel profile
@@ -70,5 +66,21 @@ router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
 
 //watch history
 router.route("/history").get(verifyJWT, getUserWatchedHistory);
+
+//upload video
+router.route("/upload-video").post(
+  verifyJWT,
+  upload.fields([
+    {
+      name: "videoFile",
+      maxCount: 1,
+    },
+    {
+      name: "thumbnail",
+      maxCount: 1,
+    },
+  ]),
+  uploadVideos
+);
 
 export default router;
