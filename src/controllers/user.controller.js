@@ -5,6 +5,7 @@ import uploadOnCloudinary from "../utils/cloudinary.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { Video } from "../models/video.model.js";
 
 //generate access and refreshTokens
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -111,7 +112,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User registered successfully..."));
+    .json(new ApiResponse(201, createdUser, "User registered successfully..."));
 });
 
 //login user
@@ -173,7 +174,8 @@ const loginUser = asyncHandler(async (req, res) => {
   //it can be only modified in server
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: false, //for local host it should be false
+    sameSite: "lax",
   };
 
   //response
@@ -215,7 +217,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: false,
   };
 
   //response
@@ -287,8 +289,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 //ChaneCurrentPassword
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   //take data from frontend
-  const { oldPassword, newPassword } = req.body;
+  const { oldPassword, newPassword, confirmPassword } = req.body;
 
+  if (newPassword !== confirmPassword) {
+    throw new ApiError(
+      404,
+      "new password and confirm password did not matched..!!"
+    );
+  }
   //we've access to req.user using authmiddleware (verify jwt)
   const user = await User.findById(req.user?._id);
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
@@ -305,30 +313,26 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   await user.save({ validateBeforeSave: false });
 
   //send response
-  return res.status(200).json(new ApiResponse());
-});
-
-//get access of currentuser
-const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(200, req.user, "Current user Fetched Successfully..!!");
+    .json(new ApiResponse(200, "password updated successfully..!!"));
 });
 
 //update other details
 const updateAccountDetails = asyncHandler(async (req, res) => {
-  const { fullname, email } = req.body;
+  const { fullname, email, username } = req.body;
 
-  if (!fullname || !email) {
+  if (!fullname || !email || !username) {
     throw new ApiError(400, "All Feilds are required ..!!");
   }
 
-  const user = User.findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
         fullname,
         email,
+        username,
       },
     },
     {
@@ -344,7 +348,9 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 //update files
 const updateAvtar = asyncHandler(async (req, res) => {
   //take new file from user
+  console.log("req.file=", req.file);
   const avtarLocalPath = req.file?.path;
+  console.log("avtar=", avtarLocalPath);
 
   if (!avtarLocalPath) {
     throw new ApiError(400, "Avtar file is missing");
@@ -383,7 +389,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
   }
 
   //upload on cloudinary
-  const coverImage = await uploadOnCloudinary(avtarLocalPath);
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
   if (!coverImage?.url) {
     throw new ApiError(400, "Error while uploading coverImage on cloudinary");
@@ -534,6 +540,61 @@ const getUserWatchedHistory = asyncHandler(async (req, res) => {
       )
     );
 });
+
+const uploadVideos = asyncHandler(async (req, res) => {
+  const { title, description } = req.body;
+  //take video from user
+  console.log("files=", req.files);
+  const videoLocalPath = req.files?.videoFile?.[0].path; //multer
+
+  const thumbnailLocalpath = req.files?.thumbnail?.[0].path;
+
+  //if path is not defined throw an error
+  if (!videoLocalPath) {
+    throw new ApiError(404, "video path is not defined");
+  }
+
+  //if thumbnail is not present
+  if (!thumbnailLocalpath) {
+    throw new ApiError(404, "thumbnail path is not defined");
+  }
+
+  //if we got the local path upload it on cloudinary
+
+  const videoFile = await uploadOnCloudinary(videoLocalPath);
+  const thumbnail = await uploadOnCloudinary(thumbnailLocalpath);
+
+  //if we did not get cloudinary url throw an error
+  if (!videoFile.url && !thumbnail.url) {
+    throw new ApiError(
+      500,
+      "Error Occured while uploading Video on Cloudinary.. "
+    );
+  }
+
+  //if video is uploaded on cloudinary successfully then save it in data base
+  const uservideo = await Video.create({
+    videoFile: videoFile.url,
+    thumbnail: thumbnail.url,
+    title,
+    description,
+    owner: req.user._id,
+  });
+
+  const uploadedVideo = await Video.findById(uservideo._id);
+  console.log("video info=", uploadedVideo);
+
+  //if created user doesnot exists
+  if (!uploadedVideo) {
+    throw new ApiError(500, "Something went wrong while uploading video");
+  }
+
+  return res
+    .status(201)
+    .json(
+      new ApiResponse(201, uploadedVideo, "video uploaded successfully...")
+    );
+});
 export {
   registerUser,
   loginUser,
@@ -543,7 +604,7 @@ export {
   updateCoverImage,
   refreshAccessToken,
   changeCurrentPassword,
-  getCurrentUser,
   getUserChannelProfile,
   getUserWatchedHistory,
+  uploadVideos,
 };
