@@ -1,9 +1,35 @@
 import axios from "axios";
 import { useUser } from "../../contexts/User.context.jsx";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 const Profile = () => {
   //we've set data into user after login
   const { user } = useUser();
+
+  const [selectedVideo, setselectedVideo] = useState();
+  const [uservideos, setUserVideos] = useState([]);
+  useEffect(() => {
+    //backend call
+
+    const getuservideos = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/v1/videos/get-user-videos",
+          {
+            withCredentials: true,
+          }
+        );
+
+        console.log("response==", response);
+
+        setUserVideos(response.data.data);
+      } catch (e) {
+        console.log("Error occured while getting user videos", e);
+      }
+    };
+
+    getuservideos();
+  }, []);
 
   const handleLogout = async () => {
     console.log("you are going to logout..");
@@ -15,6 +41,8 @@ const Profile = () => {
         withCredentials: true,
       }
     );
+
+    //set access token value here
 
     alert("User has been log out successfully..!!");
   };
@@ -94,19 +122,55 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Bottom Section */}
-      <div className="max-w-4xl mx-auto mt-12 px-6 pb-20">
-        <div className="bg-[#121212] p-8 rounded-2xl border border-red-900/40 shadow-lg">
-          <h3 className="text-xl font-semibold text-red-500 mb-4">
-            About Channel
-          </h3>
-          <p className="text-gray-400 leading-relaxed">
-            Welcome to my YouTube Clone project profile. This platform allows
-            secure authentication, media uploads, and scalable backend
-            architecture using modern technologies.
-          </p>
-        </div>
+      {/* video upload button  */}
+      <div className="flex justify-center">
+        <Link to="upload-video">
+          <button
+            className="px-5 py-2 bg-red-700 hover:bg-red-800 
+                    rounded-lg font-semibold text-white cursor-pointer mt-2"
+          >
+            Upload videos
+          </button>
+        </Link>
       </div>
+
+      {/* user videos */}
+      <div className="max-w-6xl mx-auto mt-12 px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {uservideos.map((video) => (
+          <div key={video._id} className="bg-[#121212] p-4 rounded-xl">
+            <img
+              src={video.thumbnail}
+              alt="thumbnail"
+              className="w-full h-40 object-cover rounded-lg"
+              onClick={() => {
+                setselectedVideo(video.videoFile);
+              }}
+            />
+            <h3 className="mt-3 text-white font-semibold">{video.title}</h3>
+          </div>
+        ))}
+      </div>
+
+      {/* conditional rendering..  */}
+      {selectedVideo && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="bg-[#121212] p-6 rounded-xl w-[90%] max-w-3xl relative">
+            <video
+              src={selectedVideo}
+              controls
+              autoPlay
+              className="w-full rounded-lg"
+            />
+
+            <button
+              onClick={() => setselectedVideo(null)}
+              className="absolute top-3 right-3 bg-red-700 px-3 py-1 rounded-lg"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       {/*LOGOUT BUTTON */}
       <div className="flex justify-center">
