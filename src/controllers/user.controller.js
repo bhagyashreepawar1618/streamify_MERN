@@ -541,6 +541,7 @@ const getUserWatchedHistory = asyncHandler(async (req, res) => {
     );
 });
 
+//to upload videos
 const uploadVideos = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
   //take video from user
@@ -595,6 +596,18 @@ const uploadVideos = asyncHandler(async (req, res) => {
       new ApiResponse(201, uploadedVideo, "video uploaded successfully...")
     );
 });
+
+//to get all videos for home page
+const getVideos = asyncHandler(async (req, res) => {
+  const videos = await Video.find({ isPublished: true })
+    .sort({ createdAt: -1 })
+    .populate("owner", "fullname username avtar");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, videos, "videos fetched successfully"));
+});
+
 export {
   registerUser,
   loginUser,
@@ -607,4 +620,5 @@ export {
   getUserChannelProfile,
   getUserWatchedHistory,
   uploadVideos,
+  getVideos,
 };
