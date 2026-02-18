@@ -8,6 +8,23 @@ const Profile = () => {
 
   const [selectedVideo, setselectedVideo] = useState();
   const [uservideos, setUserVideos] = useState([]);
+
+  const deletevideo = async (videoToBedeleted) => {
+    //backend api call
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/api/v1/videos/delete-video/${videoToBedeleted}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      alert("video delted successfully");
+      setUserVideos((prev) => prev.filter((video) => video._id !== id));
+    } catch (e) {
+      console.log("Error Occured while deleting Video..");
+    }
+  };
   useEffect(() => {
     //backend call
 
@@ -106,7 +123,9 @@ const Profile = () => {
         {/* Stats Section (optional YouTube vibe) */}
         <div className="flex justify-center gap-10 mt-8">
           <div className="text-center">
-            <p className="text-xl font-semibold text-white">12</p>
+            <p className="text-xl font-semibold text-white">
+              {uservideos.length}
+            </p>
             <p className="text-gray-400 text-sm">Videos</p>
           </div>
 
@@ -117,7 +136,7 @@ const Profile = () => {
 
           <div className="text-center">
             <p className="text-xl font-semibold text-white">34K</p>
-            <p className="text-gray-400 text-sm">Views</p>
+            <p className="text-gray-400 text-sm">Following</p>
           </div>
         </div>
       </div>
@@ -146,7 +165,18 @@ const Profile = () => {
                 setselectedVideo(video.videoFile);
               }}
             />
-            <h3 className="mt-3 text-white font-semibold">{video.title}</h3>
+            <div className="flex items-center justify-between mt-3">
+              <h3 className="mt-3 text-white font-semibold">{video.title}</h3>
+              <button
+                className="px-5 py-2 bg-red-700 hover:bg-red-800 
+                    rounded-lg font-semibold text-white cursor-pointer"
+                onClick={() => {
+                  deletevideo(video._id);
+                }}
+              >
+                Delete Video
+              </button>
+            </div>
           </div>
         ))}
       </div>

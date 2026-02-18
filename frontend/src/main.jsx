@@ -12,6 +12,7 @@ import { UserProvider } from "./contexts/User.context.jsx";
 import UpdateProfile from "./components/profile/UpdateProfile.jsx";
 import WatchHistory from "./components/profile/WatchHistory.jsx";
 import ChangePassword from "./components/profile/ChangePassword.jsx";
+import UploadVideo from "./components/videos/UploadVideo.jsx";
 
 const route = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const route = createBrowserRouter([
           {
             path: "change-password",
             element: <ChangePassword />,
+          },
+          {
+            path: "upload-video",
+            element: <UploadVideo />,
           },
         ],
       },

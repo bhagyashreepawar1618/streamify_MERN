@@ -4,6 +4,7 @@ import {
   getVideos,
   uploadVideos,
   getUserVideos,
+  deleteVideo,
 } from "../controllers/video.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
@@ -31,6 +32,6 @@ router.route("/upload-video").post(
 //get user videos
 router.route("/get-user-videos").get(verifyJWT, getUserVideos);
 
-router.route("/delete-video/:videoId").get(verifyJWT, deleteVideo);
+router.route("/delete-video/:videoId").delete(verifyJWT, deleteVideo);
 
 export default router;

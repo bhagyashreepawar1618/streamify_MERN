@@ -30,7 +30,7 @@ const UploadVideo = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/upload-video",
+        "http://localhost:8000/api/v1/videos/upload-video",
         videoData,
         {
           withCredentials: true,

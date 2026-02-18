@@ -11,7 +11,6 @@ import {
   updateCoverImage,
   getUserChannelProfile,
   getUserWatchedHistory,
-  uploadVideos,
 } from "../controllers/user.controller.js";
 
 const router = Router();
@@ -19,6 +18,7 @@ const router = Router();
 import { upload } from "../middlewares/multer.middleware.js";
 
 //middleware code here
+
 //register route
 router.route("/register").post(
   //middleware of multer
@@ -66,21 +66,5 @@ router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
 
 //watch history
 router.route("/history").get(verifyJWT, getUserWatchedHistory);
-
-//upload video
-router.route("/upload-video").post(
-  verifyJWT,
-  upload.fields([
-    {
-      name: "videoFile",
-      maxCount: 1,
-    },
-    {
-      name: "thumbnail",
-      maxCount: 1,
-    },
-  ]),
-  uploadVideos
-);
 
 export default router;
