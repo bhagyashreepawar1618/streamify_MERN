@@ -72,4 +72,19 @@ const getVideos = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, videos, "videos fetched successfully"));
 });
 
-export { uploadVideos, getVideos };
+//get user uploaded videos in user profile
+const getUserVideos = asyncHandler(async (req, res) => {
+  //find vedios of user
+  //access user id with req.user
+  const videos = await Video.find({ owner: req.user._id }).sort({
+    createdAt: -1,
+  });
+
+  console.log("User videos=", videos);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, videos, "User videos fetched successfully"));
+});
+
+export { getUserVideos, uploadVideos, getVideos };
