@@ -11,6 +11,7 @@ import {
   updateCoverImage,
   getUserChannelProfile,
   getUserWatchedHistory,
+  getAnotherInfo,
 } from "../controllers/user.controller.js";
 
 const router = Router();
@@ -18,7 +19,6 @@ const router = Router();
 import { upload } from "../middlewares/multer.middleware.js";
 
 //middleware code here
-
 //register route
 router.route("/register").post(
   //middleware of multer
@@ -35,6 +35,9 @@ router.route("/register").post(
   ]),
   registerUser
 );
+
+//route for another user information
+router.route("/getInfo/:_id").get(getAnotherInfo);
 
 //login user
 router.route("/login").post(loginUser);
@@ -61,7 +64,7 @@ router
   .route("/coverImage-update")
   .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
 
-//getchannel profile
+//getchannel profile (subscription details)
 router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
 
 //watch history
