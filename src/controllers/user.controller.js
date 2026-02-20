@@ -5,7 +5,6 @@ import uploadOnCloudinary from "../utils/cloudinary.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { Video } from "../models/video.model.js";
 
 //generate access and refreshTokens
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -115,6 +114,24 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "User registered successfully..."));
 });
 
+//get information of another user
+
+const getAnotherInfo = asyncHandler(async (req, res) => {
+  const { _id } = req.params;
+  console.log("id=", _id);
+
+  if (!_id) {
+    throw new ApiError(400, "Invalid User");
+  }
+
+  const user = await User.findById(_id);
+
+  console.log("my user is=", user);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User Details fetched Successfully"));
+});
 //login user
 const loginUser = asyncHandler(async (req, res) => {
   //take username and password from req.body
@@ -417,26 +434,28 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
 
   //if username is not present
-  if (!username?.trim) {
+  if (!username?.trim()) {
     throw new ApiError(400, "Username is missing");
   }
 
   //find user in database
   const channel = await User.aggregate([
     {
-      $match: username?.toLowerCase(),
-    },
-    {
-      $lookup: {
-        from: "subscription",
-        localField: "_id",
-        foreignField: "channel",
-        as: "Subscribers",
+      $match: {
+        username: username?.toLowerCase(),
       },
     },
     {
       $lookup: {
-        from: "subscription",
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
         localField: "_id",
         foreignField: "subscriber",
         as: "subscribeTo",
@@ -445,10 +464,10 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     {
       $addFields: {
         subscribersCount: {
-          $size: "$subsribers",
+          $size: "$subscribers",
         },
         channelsSubscribedToCount: {
-          $size: "subscribeTo",
+          $size: "$subscribeTo",
         },
 
         isSubscribed: {
@@ -469,7 +488,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         isSubscribed: 1,
         email: 1,
         avtar: 1,
-        avtar: 1,
+        coverImage: 1,
       },
     },
   ]);
@@ -552,4 +571,5 @@ export {
   changeCurrentPassword,
   getUserChannelProfile,
   getUserWatchedHistory,
+  getAnotherInfo,
 };
