@@ -3,28 +3,29 @@ import { useUser } from "../../contexts/User.context.jsx";
 import { useEffect, useState } from "react";
 const AnotherUserProfile = () => {
   //we've set data into user after login
-  const { anotherUserDetails } = useUser();
-
+  const { anotherUserDetails, getAnotherUserDetails } = useUser();
   const [selectedVideo, setselectedVideo] = useState();
   const [uservideos, setUserVideos] = useState([]);
-  const [subscribers, setSubscribers] = useState();
-  const [following, setFollowing] = useState();
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState();
 
   useEffect(() => {
+    console.log("another user details =", anotherUserDetails);
+    if (anotherUserDetails?.isSubscribed !== undefined) {
+      setIsSubscribed(anotherUserDetails.isSubscribed);
+    }
     if (!anotherUserDetails?._id) return;
+
+    console.log("an user id=", anotherUserDetails?._id);
 
     //backend call
     const getuservideos = async () => {
       try {
+        console.log("an user id from try block=", anotherUserDetails._id);
         const response = await axios.get(
-          `http://localhost:8000/api/v1/videos/get-another-user-videos/${anotherUserDetails._id}`,
-          {
-            withCredentials: true,
-          }
+          `http://localhost:8000/api/v1/videos/get-another-user-videos/${anotherUserDetails?._id}`
         );
 
-        console.log("another user response", response);
+        console.log("another user vdos response", response);
 
         setUserVideos(response.data.data);
       } catch (e) {
@@ -35,29 +36,27 @@ const AnotherUserProfile = () => {
     getuservideos();
   }, [anotherUserDetails]);
 
-  //to get subscription details
-  // useEffect(() => {
-  //   if (!user) return;
+  //function to set subscription details
+  const setSubcriber = async (channelId) => {
+    setIsSubscribed((prev) => !prev);
+    //backend call here
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/subscription/set-subscription-details",
+        {
+          channelId,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
-  //   const getSubscribers = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:8000/api/v1/users/c/${user.username}`,
-  //         { withCredentials: true }
-  //       );
+      await getAnotherUserDetails(anotherUserDetails.username);
+    } catch (e) {
+      console.log("Error occured While getting Subscription details", e);
+    }
+  };
 
-  //       console.log("subscription detals", response.data.data);
-  //       setSubscribers(response.data.data.subscribersCount);
-  //       setFollowing(response.data.data.subsribedTocount);
-  //     } catch (e) {
-  //       console.log("Error while fetching subscribers", e);
-  //     }
-  //   };
-
-  //   getSubscribers();
-  // }, []);
-  //if user is not logged in
-  //if user is looged in
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Cover Section */}
@@ -102,13 +101,15 @@ const AnotherUserProfile = () => {
 
           <div className="text-center">
             <p className="text-xl font-semibold text-white">
-              {subscribers || 0}
+              {anotherUserDetails?.subscribers || 0}
             </p>
             <p className="text-gray-400 text-sm">Subscribers</p>
           </div>
 
           <div className="text-center">
-            <p className="text-xl font-semibold text-white">{following || 0}</p>
+            <p className="text-xl font-semibold text-white">
+              {anotherUserDetails?.following || 0}
+            </p>
             <p className="text-gray-400 text-sm">Following</p>
           </div>
         </div>
@@ -116,7 +117,7 @@ const AnotherUserProfile = () => {
 
       <div className="text-center">
         <button
-          onClick={() => setIsSubscribed((prev) => !prev)}
+          onClick={() => setSubcriber(anotherUserDetails?._id)}
           className={`px-5 py-2 rounded-lg font-semibold text-white cursor-pointer mt-2
             ${
               isSubscribed
@@ -132,16 +133,16 @@ const AnotherUserProfile = () => {
       {/* user videos */}
       <div className="max-w-6xl mx-auto mt-12 px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {uservideos?.map((video) => (
-          <div key={video._id} className="bg-[#121212] p-4 rounded-xl">
+          <div key={video?._id} className="bg-[#121212] p-4 rounded-xl">
             <img
-              src={video.thumbnail}
+              src={video?.thumbnail}
               alt="thumbnail"
               className="w-full h-40 object-cover rounded-lg"
               onClick={() => {
-                setselectedVideo(video.videoFile);
+                setselectedVideo(video?.videoFile);
               }}
             />
-            <p>{video.title}</p>
+            <p>{video?.title}</p>
           </div>
         ))}
       </div>

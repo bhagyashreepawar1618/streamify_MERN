@@ -114,24 +114,6 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "User registered successfully..."));
 });
 
-//get information of another user
-
-const getAnotherInfo = asyncHandler(async (req, res) => {
-  const { _id } = req.params;
-  console.log("id=", _id);
-
-  if (!_id) {
-    throw new ApiError(400, "Invalid User");
-  }
-
-  const user = await User.findById(_id);
-
-  console.log("my user is=", user);
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, user, "User Details fetched Successfully"));
-});
 //login user
 const loginUser = asyncHandler(async (req, res) => {
   //take username and password from req.body
@@ -432,7 +414,6 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 //get user information for profile
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
-
   //if username is not present
   if (!username?.trim()) {
     throw new ApiError(400, "Username is missing");
@@ -469,14 +450,6 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         channelsSubscribedToCount: {
           $size: "$subscribeTo",
         },
-
-        isSubscribed: {
-          $cond: {
-            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
-            then: true,
-            else: false,
-          },
-        },
       },
     },
     {
@@ -485,10 +458,10 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         username: 1,
         subscribersCount: 1,
         channelsSubscribedToCount: 1,
-        isSubscribed: 1,
         email: 1,
         avtar: 1,
         coverImage: 1,
+        _id: 1,
       },
     },
   ]);
@@ -504,6 +477,86 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     );
 });
 
+//get another user channel profile
+
+const getAnotherUserChannelProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+  //if username is not present
+  console.log("User name is=", username);
+  if (!username?.trim()) {
+    throw new ApiError(400, "Username is missing");
+  }
+
+  //find user in database
+  const channel = await User.aggregate([
+    {
+      $match: {
+        username: username?.toLowerCase(),
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribeTo",
+      },
+    },
+    {
+      $addFields: {
+        subscribersCount: {
+          $size: "$subscribers",
+        },
+        channelsSubscribedToCount: {
+          $size: "$subscribeTo",
+        },
+        isSubscribed: {
+          $cond: {
+            if: {
+              $in: [
+                new mongoose.Types.ObjectId(req.user?._id),
+                "$subscribers.subscriber",
+              ],
+            },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullname: 1,
+        username: 1,
+        subscribersCount: 1,
+        channelsSubscribedToCount: 1,
+        email: 1,
+        avtar: 1,
+        coverImage: 1,
+        _id: 1,
+        isSubscribed: 1,
+      },
+    },
+  ]);
+
+  if (!channel?.length) {
+    throw new ApiError(404, "Channel does not exist");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, channel[0], "User channel fetched successfully..!!")
+    );
+});
 //get user watch history
 const getUserWatchedHistory = asyncHandler(async (req, res) => {
   //we got a string here (req.user._id)
@@ -571,5 +624,5 @@ export {
   changeCurrentPassword,
   getUserChannelProfile,
   getUserWatchedHistory,
-  getAnotherInfo,
+  getAnotherUserChannelProfile,
 };

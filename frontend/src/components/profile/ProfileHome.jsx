@@ -8,8 +8,6 @@ const Profile = () => {
 
   const [selectedVideo, setselectedVideo] = useState();
   const [uservideos, setUserVideos] = useState([]);
-  const [subscribers, setSubscribers] = useState();
-  const [following, setFollowing] = useState();
 
   const deletevideo = async (videoToBedeleted) => {
     //backend api call
@@ -33,7 +31,9 @@ const Profile = () => {
   useEffect(() => {
     //backend call
 
+    console.log("user response is===", user);
     const getuservideos = async () => {
+      console.log("response of user=", user);
       try {
         const response = await axios.get(
           "http://localhost:8000/api/v1/videos/get-user-videos",
@@ -52,28 +52,6 @@ const Profile = () => {
 
     getuservideos();
   }, [user]);
-
-  //to get subscription details
-  // useEffect(() => {
-  //   if (!user) return;
-
-  //   const getSubscribers = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:8000/api/v1/users/c/${user.username}`,
-  //         { withCredentials: true }
-  //       );
-
-  //       console.log("subscription detals", response.data.data);
-  //       setSubscribers(response.data.data.subscribersCount);
-  //       setFollowing(response.data.data.subsribedTocount);
-  //     } catch (e) {
-  //       console.log("Error while fetching subscribers", e);
-  //     }
-  //   };
-
-  //   getSubscribers();
-  // }, []);
 
   const handleLogout = async () => {
     console.log("you are going to logout..");
@@ -158,13 +136,15 @@ const Profile = () => {
 
           <div className="text-center">
             <p className="text-xl font-semibold text-white">
-              {subscribers || 0}
+              {user.subscribers || 0}
             </p>
             <p className="text-gray-400 text-sm">Subscribers</p>
           </div>
 
           <div className="text-center">
-            <p className="text-xl font-semibold text-white">{following || 0}</p>
+            <p className="text-xl font-semibold text-white">
+              {user.following || 0}
+            </p>
             <p className="text-gray-400 text-sm">Following</p>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import connectDB from "./db/index.js";
 import app from "./app.js";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 //connect DB is an async function so it will return a promise
 connectDB()
   .then(() => {

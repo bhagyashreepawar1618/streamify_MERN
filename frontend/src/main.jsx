@@ -13,6 +13,7 @@ import UpdateProfile from "./components/profile/UpdateProfile.jsx";
 import WatchHistory from "./components/profile/WatchHistory.jsx";
 import ChangePassword from "./components/profile/ChangePassword.jsx";
 import UploadVideo from "./components/videos/UploadVideo.jsx";
+import AnotherUserProfile from "./components/anotheruser/AnotherUserProfile.jsx";
 
 const route = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const route = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+      },
+      {
+        path: "another-user-profile",
+        element: <AnotherUserProfile />,
       },
       {
         path: "profile",

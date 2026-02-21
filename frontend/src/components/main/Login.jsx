@@ -35,19 +35,22 @@ const Login = () => {
         }
       );
 
-      setFormData({
-        username: "",
-        password: "",
-      });
+      console.log("user logged in successfully..!!");
 
-      console.log("response from backend is=", response.data.data.user);
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/users/c/${formData.username}`
+      );
+
+      console.log("response from backend is=", res.data.data);
 
       const userDetails = {
-        fullname: response.data.data.user.fullname,
-        avtar: response.data.data.user.avtar,
-        coverImage: response.data.data.user.coverImage,
-        username: response.data.data.user.username,
-        email: response.data.data.user.email,
+        fullname: res.data.data.fullname,
+        avtar: res.data.data.avtar,
+        coverImage: res.data.data.coverImage,
+        username: res.data.data.username,
+        email: res.data.data.email,
+        subscribers: res.data.data.subscribersCount,
+        following: res.data.data.channelsSubscribedToCount,
       };
 
       console.log("userdetails=", userDetails);
@@ -58,10 +61,6 @@ const Login = () => {
       console.log("Error occured while login the user ", error);
     }
   };
-
-  useEffect(() => {
-    console.log("User updated:", user);
-  }, [user]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f]">

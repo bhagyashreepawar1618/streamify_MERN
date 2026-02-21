@@ -11,7 +11,7 @@ import {
   updateCoverImage,
   getUserChannelProfile,
   getUserWatchedHistory,
-  getAnotherInfo,
+  getAnotherUserChannelProfile,
 } from "../controllers/user.controller.js";
 
 const router = Router();
@@ -35,9 +35,6 @@ router.route("/register").post(
   ]),
   registerUser
 );
-
-//route for another user information
-router.route("/getInfo/:_id").get(getAnotherInfo);
 
 //login user
 router.route("/login").post(loginUser);
@@ -64,9 +61,13 @@ router
   .route("/coverImage-update")
   .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
 
-//getchannel profile (subscription details)
-router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
+//getchannel profile (subscription details) of your own channel
+router.route("/c/:username").get(getUserChannelProfile);
 
+//if you are logged in then only you can access another user profile
+router
+  .route("/another-user/:username")
+  .get(verifyJWT, getAnotherUserChannelProfile);
 //watch history
 router.route("/history").get(verifyJWT, getUserWatchedHistory);
 

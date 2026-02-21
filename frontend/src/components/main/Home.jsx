@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ShowVideo from "../videos/ShowVideo";
+import { useUser } from "../../contexts/User.context";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const { getAnotherUserDetails } = useUser({});
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -56,9 +58,16 @@ const Home = () => {
                   className="w-8 h-8 rounded-full object-cover"
                 />
                 <div>
-                  <p className="text-sm text-gray-300">
-                    {video.owner?.fullname}
-                  </p>
+                  <Link to="another-user-profile">
+                    <p
+                      className="text-sm text-gray-300 cursor-pointer"
+                      onClick={() => {
+                        getAnotherUserDetails(video?.owner?.username);
+                      }}
+                    >
+                      {video.owner?.fullname}
+                    </p>
+                  </Link>
                   <p className="text-xs text-gray-500">{video.views} views</p>
                 </div>
               </div>
