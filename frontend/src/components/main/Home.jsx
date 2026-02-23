@@ -13,10 +13,7 @@ const Home = () => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(120);
 
-  const setwatchedHistory = async (videoid, videoFile) => {
-    console.log("video file link is=", videoFile);
-    setSelectedVideo(videoFile);
-
+  const setwatchedHistory = async (videoid) => {
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/set-watched-history/${videoid}`,
@@ -39,7 +36,6 @@ const Home = () => {
     } else {
       setLikeCount(likeCount + 1);
     }
-    setLiked(!liked);
   };
   useEffect(() => {
     const fetchVideos = async () => {
@@ -48,6 +44,7 @@ const Home = () => {
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/get-videos`
         );
 
+        console.log("videos=", response.data.data);
         setVideos(response.data.data);
       } catch (error) {
         console.log("Error fetching videos", error);
@@ -106,7 +103,11 @@ const Home = () => {
                 className="w-full h-52 object-cover
                          group-hover:scale-110
                          transition-transform duration-500"
-                onClick={() => setwatchedHistory(video._id, video.videoFile)}
+                onClick={() => {
+                  console.log("videoid=", video.videoFile);
+                  setSelectedVideo(video.videoFile);
+                  setwatchedHistory(video._id);
+                }}
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80" />
