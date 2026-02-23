@@ -12,7 +12,10 @@ import {
   getUserChannelProfile,
   getUserWatchedHistory,
   getAnotherUserChannelProfile,
+  addToWatchHistory,
 } from "../controllers/user.controller.js";
+
+import { setLikes } from "../controllers/likes.controller.js";
 
 const router = Router();
 
@@ -68,7 +71,15 @@ router.route("/c/:username").get(getUserChannelProfile);
 router
   .route("/another-user/:username")
   .get(verifyJWT, getAnotherUserChannelProfile);
+
+//set watched history
+router
+  .route("/set-watched-history/:videoId")
+  .post(verifyJWT, addToWatchHistory);
 //watch history
-router.route("/history").get(verifyJWT, getUserWatchedHistory);
+router.route("/watch-history").get(verifyJWT, getUserWatchedHistory);
+
+//set likes
+router.route("/setlikes").post(verifyJWT, setLikes);
 
 export default router;
