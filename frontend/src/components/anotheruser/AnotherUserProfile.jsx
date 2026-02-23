@@ -5,12 +5,10 @@ const AnotherUserProfile = () => {
   //we've set data into user after login
   const { anotherUserDetails, getAnotherUserDetails } = useUser();
   const [selectedVideo, setselectedVideo] = useState();
-  const [uservideos, setUserVideos] = useState([]);
+    const [uservideos, setUserVideos] = useState([]);
   const [isSubscribed, setIsSubscribed] = useState();
   const token = localStorage.getItem("accessToken");
   useEffect(() => {
-    onsole.log("token is=", token);
-    console.log("another user details =", anotherUserDetails);
     console.log("token is=", token);
     if (anotherUserDetails?.isSubscribed !== undefined) {
       setIsSubscribed(anotherUserDetails.isSubscribed);
