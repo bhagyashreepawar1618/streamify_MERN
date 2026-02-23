@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 const ChangePassword = () => {
   const { user } = useUser();
+  const token = localStorage.getItem("accessToken");
   const [formData, setFormData] = useState({
     oldPassword: "",
     newPassword: "",
@@ -36,7 +37,9 @@ const ChangePassword = () => {
           confirmPassword: formData.confirmPassword,
         },
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 

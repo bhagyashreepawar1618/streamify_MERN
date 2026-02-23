@@ -7,9 +7,11 @@ const AnotherUserProfile = () => {
   const [selectedVideo, setselectedVideo] = useState();
   const [uservideos, setUserVideos] = useState([]);
   const [isSubscribed, setIsSubscribed] = useState();
-
+  const token = localStorage.getItem("accessToken");
   useEffect(() => {
+    onsole.log("token is=", token);
     console.log("another user details =", anotherUserDetails);
+    console.log("token is=", token);
     if (anotherUserDetails?.isSubscribed !== undefined) {
       setIsSubscribed(anotherUserDetails.isSubscribed);
     }
@@ -24,7 +26,9 @@ const AnotherUserProfile = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/get-another-user-videos/${anotherUserDetails?._id}`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
 
@@ -50,7 +54,9 @@ const AnotherUserProfile = () => {
           channelId,
         },
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 

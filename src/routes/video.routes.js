@@ -14,7 +14,9 @@ const router = Router();
 router.route("/get-videos").get(getVideos);
 
 //get another user videos
-router.route("/get-another-user-videos/:_id").get(getAnotherUserVideos);
+router
+  .route("/get-another-user-videos/:_id")
+  .get(verifyJWT, getAnotherUserVideos);
 //secured routes
 //upload video
 router.route("/upload-video").post(

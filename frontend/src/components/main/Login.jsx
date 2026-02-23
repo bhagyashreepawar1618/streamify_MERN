@@ -28,17 +28,11 @@ const Login = () => {
         {
           username: formData.username,
           password: formData.password,
-        },
-        {
-          withCredentials: true,
         }
       );
 
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/c/${formData.username}`,
-        {
-          withCredentials: true,
-        }
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/c/${formData.username}`
       );
 
       const userDetails = {
@@ -51,8 +45,9 @@ const Login = () => {
         following: res.data.data.channelsSubscribedToCount,
       };
       setUser(userDetails);
+      console.log("accesss token is=", response.data.data.accessToken);
+      localStorage.setItem("accessToken", response.data.data.accessToken);
 
-      console.log("login response is =", response);
       alert("User is logged in successfully..!!");
     } catch (error) {
       console.log("Error occured while login the user ", error);

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 
 const UploadVideo = () => {
+  const token = localStorage.getItem("accessToken");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -33,7 +34,9 @@ const UploadVideo = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/upload-video`,
         videoData,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 

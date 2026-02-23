@@ -5,15 +5,19 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [anotherUserDetails, setAnotherUserDeatils] = useState(null);
+  const token = localStorage.getItem("accessToken");
 
   //get user profile
   const getAnotherUserDetails = async (username) => {
     console.log(username);
+    console.log("tokennn=", token);
 
     const response = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/another-user/${username}`,
       {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     console.log("response from backend is =", response.data.data);

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const Profile = () => {
   //we've set data into user after login
   const { user } = useUser();
-
+  const token = localStorage.getItem("accessToken");
   const [selectedVideo, setselectedVideo] = useState();
   const [uservideos, setUserVideos] = useState([]);
 
@@ -15,7 +15,9 @@ const Profile = () => {
       await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/delete-video/${videoToBedeleted}`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -37,7 +39,9 @@ const Profile = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/get-user-videos`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         setUserVideos(response.data.data);
@@ -56,7 +60,9 @@ const Profile = () => {
       `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/logout`,
       {},
       {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 

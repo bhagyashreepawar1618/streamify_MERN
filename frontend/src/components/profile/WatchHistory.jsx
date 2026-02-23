@@ -3,6 +3,7 @@ import { useUser } from "../../contexts/User.context";
 import { useEffect, useState } from "react";
 import axios from "axios";
 function WatchHistory() {
+  const token = localStorage.getItem("accessToken");
   const { user } = useUser();
   const [watchedHistoryVideos, setwatchedHistoryVideos] = useState([]);
 
@@ -12,7 +13,9 @@ function WatchHistory() {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/watch-history`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         setwatchedHistoryVideos(response.data.data);

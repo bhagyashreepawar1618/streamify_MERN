@@ -8,6 +8,7 @@ const Home = () => {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const { getAnotherUserDetails } = useUser({});
+  const token = localStorage.getItem("accessToken");
 
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(120);
@@ -20,7 +21,9 @@ const Home = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/set-watched-history/${videoid}`,
         {},
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
     } catch (e) {
@@ -41,10 +44,7 @@ const Home = () => {
     const fetchVideos = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/get-videos`,
-          {
-            withCredentials: true,
-          }
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/get-videos`
         );
 
         setVideos(response.data.data);

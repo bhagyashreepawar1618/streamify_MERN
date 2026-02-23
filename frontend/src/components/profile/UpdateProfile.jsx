@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 const UpdateProfile = () => {
   const { user, setUser } = useUser();
+  const token = localStorage.getItem("accessToken");
   let newavtar;
   let newcover;
   const [formData, setFormData] = useState({
@@ -35,7 +36,9 @@ const UpdateProfile = () => {
           username: formData.username,
         },
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -48,7 +51,9 @@ const UpdateProfile = () => {
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/avtar-update`,
           avtardata,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
 
@@ -65,7 +70,9 @@ const UpdateProfile = () => {
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/coverImage-update`,
           coverdata,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         newcover = newdata.data.data.coverImage;

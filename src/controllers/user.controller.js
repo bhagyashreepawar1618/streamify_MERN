@@ -150,38 +150,26 @@ const loginUser = asyncHandler(async (req, res) => {
   );
 
   console.log("access token is= ", accessToken);
-  //send cookie
+
   //remove password and refresh token then send the response (send accessToken and other info)
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken "
   );
 
-  //cookie is not modifiable by browser
   //it can be only modified in server
-  const options = {
-    httpOnly: true,
-    secure: true, //for local host it should be false
-    sameSite: "none",
-    domain: "fullstack-yt-clone-app.onrender.com",
-  };
-
   //response
 
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(
-      new ApiResponse(
-        200,
-        {
-          user: loggedInUser,
-          accessToken,
-          refreshToken,
-        },
-        "User logged in successfully"
-      )
-    );
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        user: loggedInUser,
+        accessToken,
+        refreshToken,
+      },
+      "User logged in successfully"
+    )
+  );
 });
 
 //logout
@@ -202,18 +190,9 @@ const logoutUser = asyncHandler(async (req, res) => {
     }
   );
 
-  const options = {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    domain: "fullstack-yt-clone-app.onrender.com",
-  };
-
   //response
   return res
     .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User Logged out successfully"));
 });
 // refresh access token
@@ -245,30 +224,19 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(404, "RefreshToken is expired or used !");
     }
 
-    const options = {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      domain: "fullstack-yt-clone-app.onrender.com",
-    };
-
     const { accessToken, newRefreshToken } =
       await generateAccessAndRefreshTokens(user._id);
 
-    return res
-      .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshtoken", newRefreshToken, options)
-      .json(
-        new ApiResponse(
-          200,
-          {
-            accessToken,
-            newRefreshToken,
-          },
-          "Access token refreshed succeesfully"
-        )
-      );
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          accessToken,
+          newRefreshToken,
+        },
+        "Access token refreshed succeesfully"
+      )
+    );
   } catch (error) {
     console.log("Error ocured ", error);
     throw new ApiError(401, error?.message || "Invalid refresh Token");
