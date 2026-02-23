@@ -12,7 +12,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
     //user Instance
     const user = await User.findById(userId);
     //we've got all the properties in user (user is an object)
-    console.log(user, "this is a response from mongodb");
+
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
@@ -43,9 +43,6 @@ const registerUser = asyncHandler(async (req, res) => {
   //return response
 
   const { fullname, email, username, password } = req.body;
-
-  console.log(req.body);
-  console.log(req.files);
 
   //validation
   if (fullname === "" || username === "" || password === "" || email === "") {
@@ -125,14 +122,9 @@ const loginUser = asyncHandler(async (req, res) => {
   //send cookie
   const { username, password } = req.body;
 
-  console.log("username is=", username, "password is = ", password);
   //atleast one is required
   if (!username) {
     throw new ApiError(400, "username is required");
-  }
-
-  if (username) {
-    console.log("username=", username);
   }
 
   //instance will be return
@@ -144,10 +136,8 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User is not registered..!!");
   }
 
-  console.log("user=", user);
   const isPassValid = await user.isPasswordCorrect(password);
 
-  console.log("pass valid=", isPassValid);
   //if password is not true
   if (!isPassValid) {
     throw new ApiError(401, "Invalid user Credentials");
@@ -159,22 +149,18 @@ const loginUser = asyncHandler(async (req, res) => {
     user._id
   );
 
-  console.log("accesstoken=", accessToken);
-
   //send cookie
   //remove password and refresh token then send the response (send accessToken and other info)
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken "
   );
 
-  console.log("loggedin user=", loggedInUser);
-
   //cookie is not modifiable by browser
   //it can be only modified in server
   const options = {
     httpOnly: true,
-    secure: false, //for local host it should be false
-    sameSite: "lax",
+    secure: true, //for local host it should be false
+    sameSite: "none",
   };
 
   //response
@@ -216,7 +202,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: false,
+    secure: true,
+    sameSite: "none",
   };
 
   //response
@@ -242,8 +229,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-
-    console.log("decodedtoken id =", decodedToken);
 
     //access of user Instance
     const user = await User.findById(decodedToken?._id);
@@ -481,8 +466,8 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
 const getAnotherUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
+
   //if username is not present
-  console.log("User name is=", username);
   if (!username?.trim()) {
     throw new ApiError(400, "Username is missing");
   }
@@ -557,6 +542,23 @@ const getAnotherUserChannelProfile = asyncHandler(async (req, res) => {
       new ApiResponse(200, channel[0], "User channel fetched successfully..!!")
     );
 });
+
+//sey watch history
+const addToWatchHistory = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $addToSet: { watchHistory: videoId }, // duplicate avoid
+    },
+    { new: true }
+  );
+
+  return res.status(200).json({
+    message: "Added to watch history",
+  });
+});
 //get user watch history
 const getUserWatchedHistory = asyncHandler(async (req, res) => {
   //we got a string here (req.user._id)
@@ -607,7 +609,7 @@ const getUserWatchedHistory = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        user[0].watchHistory,
+        user[0].watchedHistory,
         "watch History Fetched SuccessFully"
       )
     );
@@ -625,4 +627,5 @@ export {
   getUserChannelProfile,
   getUserWatchedHistory,
   getAnotherUserChannelProfile,
+  addToWatchHistory,
 };
