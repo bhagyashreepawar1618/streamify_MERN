@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
     console.log(username);
 
     const response = await axios.get(
-      `http://localhost:8000/api/v1/users/another-user/${username}`,
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/another-user/${username}`,
       {
         withCredentials: true,
       }

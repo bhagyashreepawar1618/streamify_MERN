@@ -22,7 +22,10 @@ const AnotherUserProfile = () => {
       try {
         console.log("an user id from try block=", anotherUserDetails._id);
         const response = await axios.get(
-          `http://localhost:8000/api/v1/videos/get-another-user-videos/${anotherUserDetails?._id}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/get-another-user-videos/${anotherUserDetails?._id}`,
+          {
+            withCredentials: true,
+          }
         );
 
         console.log("another user vdos response", response);
