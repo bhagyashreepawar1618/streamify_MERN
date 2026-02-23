@@ -30,13 +30,12 @@ const Home = () => {
   };
 
   const handleLike = () => {
-    setLiked((prev) => !prev);
-    if (liked) {
-      setLikeCount(likeCount - 1);
-    } else {
-      setLikeCount(likeCount + 1);
-    }
+    setLiked((prev) => {
+      setLikeCount((count) => (prev ? count - 1 : count + 1));
+      return !prev;
+    });
   };
+
   useEffect(() => {
     const fetchVideos = async () => {
       try {
@@ -105,7 +104,9 @@ const Home = () => {
                          transition-transform duration-500"
                 onClick={() => {
                   console.log("videoid=", video.videoFile);
-                  setSelectedVideo(video.videoFile);
+                  setSelectedVideo(
+                    "https://www.w3schools.com/html/mov_bbb.mp4"
+                  );
                   setwatchedHistory(video._id);
                 }}
               />
