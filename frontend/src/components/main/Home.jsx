@@ -6,7 +6,7 @@ import { FaHeart } from "react-icons/fa";
 const Home = () => {
   const { user } = useUser();
   const [videos, setVideos] = useState([]);
-  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState();
   const { getAnotherUserDetails } = useUser({});
   const token = localStorage.getItem("accessToken");
 
@@ -14,6 +14,7 @@ const Home = () => {
   const [likeCount, setLikeCount] = useState(120);
 
   const setwatchedHistory = async (videoid, videoFile) => {
+    console.log("video file link is=", videoFile);
     setSelectedVideo(videoFile);
 
     try {
