@@ -40,11 +40,12 @@ const Home = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/videos/get-videos"
+        await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/get-videos`,
+          {
+            withCredentials: true,
+          }
         );
-
-        console.log("videos response=", response.data.data);
 
         setVideos(response.data.data);
       } catch (error) {
