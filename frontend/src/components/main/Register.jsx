@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -37,8 +37,8 @@ const Register = () => {
     //backend call here
     try {
       //send data to backend
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/users/register",
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/register`,
         data
       );
 

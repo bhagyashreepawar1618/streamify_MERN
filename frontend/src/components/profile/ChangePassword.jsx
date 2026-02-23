@@ -25,14 +25,11 @@ const ChangePassword = () => {
       return;
     }
 
-    console.log("Old Password:", formData.oldPassword);
-    console.log("New Password:", formData.newPassword);
-
     //backend api call here
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/users/change-password",
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/change-password`,
         {
           oldPassword: formData.oldPassword,
           newPassword: formData.newPassword,

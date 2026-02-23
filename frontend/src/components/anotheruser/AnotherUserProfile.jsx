@@ -41,8 +41,8 @@ const AnotherUserProfile = () => {
     setIsSubscribed((prev) => !prev);
     //backend call here
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/subscription/set-subscription-details",
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/subscription/set-subscription-details`,
         {
           channelId,
         },

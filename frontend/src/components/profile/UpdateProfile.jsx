@@ -28,7 +28,7 @@ const UpdateProfile = () => {
     //backend api call
     try {
       const response = await axios.patch(
-        "http://localhost:8000/api/v1/users/update-account",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/update-account`,
         {
           fullname: formData.fullname,
           email: formData.email,
@@ -39,15 +39,13 @@ const UpdateProfile = () => {
         }
       );
 
-      console.log("User details sent successfully ,", response);
-
       //for avatar update
       if (avtar) {
         const avtardata = new FormData();
         avtardata.append("avtar", avtar);
 
         const newdata = await axios.patch(
-          "http://localhost:8000/api/v1/users/avtar-update",
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/avtar-update`,
           avtardata,
           {
             withCredentials: true,
@@ -64,13 +62,12 @@ const UpdateProfile = () => {
         coverdata.append("coverImage", coverImage);
 
         const newdata = await axios.patch(
-          "http://localhost:8000/api/v1/users/coverImage-update",
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/coverImage-update`,
           coverdata,
           {
             withCredentials: true,
           }
         );
-        console.log("newdata=", newdata.data.data.coverImage);
         newcover = newdata.data.data.coverImage;
       }
     } catch (error) {

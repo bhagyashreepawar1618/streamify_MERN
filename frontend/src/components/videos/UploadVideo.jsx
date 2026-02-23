@@ -29,8 +29,8 @@ const UploadVideo = () => {
     videoData.append("thumbnail", thumbnail);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/videos/upload-video",
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/upload-video`,
         videoData,
         {
           withCredentials: true,

@@ -1,9 +1,9 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUser } from "../../contexts/User.context.jsx";
 
 const Login = () => {
-  const { setUser, user } = useUser();
+  const { setUser } = useUser();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -19,13 +19,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
 
     //api call
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/users/login",
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/login`,
         {
           username: formData.username,
           password: formData.password,
@@ -35,13 +34,9 @@ const Login = () => {
         }
       );
 
-      console.log("user logged in successfully..!!");
-
       const res = await axios.get(
-        `http://localhost:8000/api/v1/users/c/${formData.username}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/c/${formData.username}`
       );
-
-      console.log("response from backend is=", res.data.data);
 
       const userDetails = {
         fullname: res.data.data.fullname,
@@ -52,8 +47,6 @@ const Login = () => {
         subscribers: res.data.data.subscribersCount,
         following: res.data.data.channelsSubscribedToCount,
       };
-
-      console.log("userdetails=", userDetails);
       setUser(userDetails);
 
       alert("User is logged in successfully..!!");

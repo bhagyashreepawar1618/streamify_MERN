@@ -12,8 +12,8 @@ const Profile = () => {
   const deletevideo = async (videoToBedeleted) => {
     //backend api call
     try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/v1/videos/delete-video/${videoToBedeleted}`,
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/delete-video/${videoToBedeleted}`,
         {
           withCredentials: true,
         }
@@ -31,19 +31,15 @@ const Profile = () => {
   useEffect(() => {
     //backend call
 
-    console.log("user response is===", user);
     const getuservideos = async () => {
       console.log("response of user=", user);
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/v1/videos/get-user-videos",
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/get-user-videos`,
           {
             withCredentials: true,
           }
         );
-
-        console.log("response==", response);
-
         setUserVideos(response.data.data);
       } catch (e) {
         console.log("Error occured while getting user videos", e);
@@ -56,15 +52,13 @@ const Profile = () => {
   const handleLogout = async () => {
     console.log("you are going to logout..");
     //backend call
-    const response = await axios.post(
-      "http://localhost:8000/api/v1/users/logout",
+    await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/logout`,
       {},
       {
         withCredentials: true,
       }
     );
-
-    //set access token value here
 
     alert("User has been log out successfully..!!");
   };
