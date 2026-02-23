@@ -35,7 +35,10 @@ const Login = () => {
       );
 
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/c/${formData.username}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/c/${formData.username}`,
+        {
+          withCredentials: true,
+        }
       );
 
       const userDetails = {
