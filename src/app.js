@@ -8,7 +8,8 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin:
+      process.env.CORS_ORIGIN || "https://fullstack-yt-clone-app.vercel.app",
     credentials: true,
   })
 );
@@ -42,6 +43,5 @@ import videoRouter from "./routes/video.routes.js";
 app.use("/api/v1/users", userRouter); //users is preffix
 app.use("/api/v1/videos", videoRouter);
 app.use("/api/v1/subscription", subscriptionRouter);
-//http://localhost:5000/api/v1/users/register
 
 export default app;
