@@ -8,10 +8,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://fullstack-yt-clone-app.vercel.app",
-    ],
+    origin: ["http://localhost:5173", process.env.CORS_ORIGIN],
     credentials: true,
   })
 );
