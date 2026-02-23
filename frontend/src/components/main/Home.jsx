@@ -40,7 +40,7 @@ const Home = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        await axios.get(
+        const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/videos/get-videos`,
           {
             withCredentials: true,
