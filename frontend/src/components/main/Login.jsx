@@ -23,7 +23,7 @@ const Login = () => {
     //api call
 
     try {
-      await axios.post(
+      const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/login`,
         {
           username: formData.username,
@@ -49,6 +49,7 @@ const Login = () => {
       };
       setUser(userDetails);
 
+      console.log("login response is =", response);
       alert("User is logged in successfully..!!");
     } catch (error) {
       console.log("Error occured while login the user ", error);

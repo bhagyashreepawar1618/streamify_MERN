@@ -41,6 +41,7 @@ const Profile = () => {
           }
         );
         setUserVideos(response.data.data);
+        console.log("data=", response.data.data);
       } catch (e) {
         console.log("Error occured while getting user videos", e);
       }
@@ -50,7 +51,6 @@ const Profile = () => {
   }, [user]);
 
   const handleLogout = async () => {
-    console.log("you are going to logout..");
     //backend call
     await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/logout`,

@@ -27,7 +27,7 @@ const UpdateProfile = () => {
 
     //backend api call
     try {
-      const response = await axios.patch(
+      await axios.patch(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/update-account`,
         {
           fullname: formData.fullname,
