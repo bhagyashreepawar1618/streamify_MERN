@@ -8,12 +8,13 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin:
-      process.env.CORS_ORIGIN || "https://fullstack-yt-clone-app.vercel.app",
+    origin: [
+      "http://localhost:5173",
+      "https://fullstack-yt-clone-app.vercel.app",
+    ],
     credentials: true,
   })
 );
-
 app.use(
   express.json({
     limit: "10mb",
