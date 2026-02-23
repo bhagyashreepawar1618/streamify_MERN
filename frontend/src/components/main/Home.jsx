@@ -104,14 +104,12 @@ const Home = () => {
                          transition-transform duration-500"
                 onClick={() => {
                   console.log("videoid=", video.videoFile);
-                  setSelectedVideo(
-                    "https://www.w3schools.com/html/mov_bbb.mp4"
-                  );
+                  setSelectedVideo(video.videoFile);
                   setwatchedHistory(video._id);
                 }}
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80 pointer-events-none" />
             </div>
 
             <div className="p-5">
