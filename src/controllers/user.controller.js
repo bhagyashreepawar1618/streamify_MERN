@@ -162,6 +162,7 @@ const loginUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true, //for local host it should be false
     sameSite: "none",
+    domain: "fullstack-yt-clone-app.onrender.com",
   };
 
   //response
@@ -205,6 +206,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
+    domain: "fullstack-yt-clone-app.onrender.com",
   };
 
   //response
@@ -247,6 +249,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      domain: "fullstack-yt-clone-app.onrender.com",
     };
 
     const { accessToken, newRefreshToken } =
