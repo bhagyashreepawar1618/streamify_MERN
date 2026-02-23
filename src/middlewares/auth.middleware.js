@@ -8,7 +8,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
   //we've set cookies at the time of login
 
   console.log("origin=", process.env.PORT);
-  console.log("req.cookies=", req.cookies);
+  console.log("req.cookies=", req.cookies?.accessToken);
   try {
     const token =
       req.cookies?.accessToken ||

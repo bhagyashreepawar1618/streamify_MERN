@@ -149,6 +149,7 @@ const loginUser = asyncHandler(async (req, res) => {
     user._id
   );
 
+  console.log("access token is= ", accessToken);
   //send cookie
   //remove password and refresh token then send the response (send accessToken and other info)
   const loggedInUser = await User.findById(user._id).select(
@@ -245,6 +246,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const options = {
       httpOnly: true,
       secure: true,
+      sameSite: "none",
     };
 
     const { accessToken, newRefreshToken } =
