@@ -8,11 +8,8 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
   //we've set cookies at the time of login
 
   console.log("origin=", process.env.PORT);
-  console.log("req.cookies=", req.cookies?.accessToken);
   try {
-    const token =
-      req.cookies?.accessToken ||
-      req.header("Authorization")?.replace("Bearer ", "");
+    const token = req.header("Authorization")?.replace("Bearer ", "");
 
     //if token is not there throw an error
 
