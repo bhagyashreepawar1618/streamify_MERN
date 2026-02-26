@@ -192,21 +192,31 @@ const Profile = () => {
 
       {/* conditional rendering..  */}
       {selectedVideo && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-[#121212] p-6 rounded-xl w-[90%] max-w-3xl relative">
-            <video
-              src={selectedVideo}
-              controls
-              autoPlay
-              className="w-full rounded-lg"
-            />
-
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="relative w-full max-w-5xl bg-[#121212] rounded-2xl shadow-2xl border border-red-900/30 flex flex-col items-center">
+            {/* Close Button - Always Visible */}
             <button
               onClick={() => setselectedVideo(null)}
-              className="absolute top-3 right-3 bg-red-700 px-3 py-1 rounded-lg"
+              className="absolute -top-4 -right-4 z-50
+                   w-10 h-10 rounded-full
+                   bg-red-600 hover:bg-red-700
+                   text-white text-xl font-bold
+                   flex items-center justify-center
+                   shadow-lg shadow-red-600/40
+                   transition duration-300 hover:scale-110"
             >
               ✕
             </button>
+
+            {/* Video Wrapper */}
+            <div className="w-full flex items-center justify-center bg-black rounded-2xl overflow-hidden">
+              <video
+                src={selectedVideo}
+                controls
+                autoPlay
+                className="max-h-[80vh] w-auto max-w-full object-contain"
+              />
+            </div>
           </div>
         </div>
       )}
