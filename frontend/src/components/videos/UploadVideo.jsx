@@ -3,6 +3,7 @@ import { useState } from "react";
 
 const UploadVideo = () => {
   const token = localStorage.getItem("accessToken");
+  const [loading, setloading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -21,6 +22,7 @@ const UploadVideo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setloading(true);
     // backend call here
     const videoData = new FormData();
 
@@ -43,6 +45,8 @@ const UploadVideo = () => {
       alert("Video uploaded Successfully.!!");
     } catch (e) {
       console.log("Error Occured while uploading vedio ", e);
+    } finally {
+      setloading(false);
     }
 
     setFormData({
@@ -127,12 +131,23 @@ const UploadVideo = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3 mt-4 bg-red-700 hover:bg-red-800 
-                       transition-all duration-200 
-                       rounded-lg font-semibold text-lg 
-                       active:scale-95"
+            disabled={loading}
+            className={`w-full py-3 mt-4 rounded-lg font-semibold text-lg 
+  transition-all duration-300 active:scale-95 flex items-center justify-center gap-3
+  ${
+    loading
+      ? "bg-gray-700 cursor-not-allowed opacity-80"
+      : "bg-red-700 hover:bg-red-800 hover:shadow-lg hover:shadow-red-600/40"
+  }`}
           >
-            Publish Video
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Uploading Video...
+              </>
+            ) : (
+              "Publish Video"
+            )}
           </button>
         </form>
       </div>
