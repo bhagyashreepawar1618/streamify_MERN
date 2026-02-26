@@ -173,31 +173,48 @@ const Home = () => {
 
       {/* Modal */}
       {selectedVideo && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center z-50 p-4">
           <div
-            className="bg-[#111111] p-6 rounded-2xl w-[90%] max-w-4xl relative
-                        border border-red-900/30
-                        shadow-2xl shadow-red-600/30
-                        animate-fadeIn"
+            className="relative bg-[#111111] rounded-2xl 
+                 border border-red-900/30
+                 shadow-2xl shadow-red-600/30
+                 w-full max-w-5xl flex flex-col items-center"
           >
-            <video
-              src={selectedVideo}
-              controls
-              autoPlay
-              className="w-full rounded-xl"
-            />
+            {/* Close Button - Always Visible */}
+            <button
+              onClick={() => setSelectedVideo(null)}
+              className="absolute -top-4 -right-4 z-50
+                   bg-red-600 hover:bg-red-700
+                   w-10 h-10 rounded-full
+                   flex items-center justify-center
+                   text-white text-xl font-bold
+                   shadow-lg shadow-red-600/50
+                   transition hover:scale-110"
+            >
+              ✕
+            </button>
+
+            {/* Video Wrapper */}
+            <div className="w-full flex items-center justify-center bg-black rounded-t-2xl overflow-hidden">
+              <video
+                src={selectedVideo}
+                controls
+                autoPlay
+                className="max-h-[80vh] w-auto max-w-full object-contain"
+              />
+            </div>
 
             {/* Like Section */}
-            <div className="flex items-center gap-4 mt-6">
+            <div className="flex items-center gap-4 py-5">
               <button
                 onClick={handleLike}
-                className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium
-                transition-all duration-300
-                ${
-                  liked
-                    ? "bg-red-600 text-white shadow-md shadow-red-600/50 scale-105"
-                    : "bg-gray-800 text-gray-300 hover:bg-red-900/40 hover:text-white"
-                }`}
+                className={`flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium
+          transition-all duration-300
+          ${
+            liked
+              ? "bg-red-600 text-white shadow-md shadow-red-600/50 scale-105"
+              : "bg-gray-800 text-gray-300 hover:bg-red-900/40 hover:text-white"
+          }`}
               >
                 <FaHeart
                   className={`text-lg ${liked ? "text-white" : "text-red-500"}`}
@@ -207,15 +224,6 @@ const Home = () => {
 
               <span className="text-gray-400 text-sm">{likeCount} Likes</span>
             </div>
-
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedVideo(null)}
-              className="absolute top-4 right-4 bg-red-700 hover:bg-red-800
-                       px-4 py-1 rounded-lg text-sm font-semibold transition"
-            >
-              ✕
-            </button>
           </div>
         </div>
       )}
