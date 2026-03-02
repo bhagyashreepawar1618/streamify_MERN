@@ -9,9 +9,6 @@ export const UserProvider = ({ children }) => {
 
   //get user profile
   const getAnotherUserDetails = async (username) => {
-    console.log(username);
-    console.log("tokennn=", token);
-
     const response = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/another-user/${username}`,
       {
@@ -20,10 +17,6 @@ export const UserProvider = ({ children }) => {
         },
       }
     );
-    console.log("response from backend is =", response.data.data);
-    console.log("id of user=", response.data.data._id);
-
-    console.log("username=", response.data.data.username);
     const details = {
       fullname: response.data.data.fullname,
       avtar: response.data.data.avtar,
@@ -36,7 +29,6 @@ export const UserProvider = ({ children }) => {
       isSubscribed: response.data.data.isSubscribed,
     };
 
-    console.log("details=", details);
     setAnotherUserDeatils(details);
   };
   const value = {
