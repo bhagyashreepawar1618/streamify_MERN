@@ -2,8 +2,9 @@ import axios from "axios";
 import { useState } from "react";
 import { useUser } from "../../contexts/User.context.jsx";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 const Login = () => {
+  const navigate = useNavigate();
   const { setUser } = useUser();
 
   const [formData, setFormData] = useState({
@@ -11,7 +12,7 @@ const Login = () => {
     password: "",
   });
 
-  // ✅ loading state added
+  // loading state added
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -24,7 +25,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setLoading(true); // ✅ start loading
+    setLoading(true); //  start loading
 
     try {
       const response = await axios.post(
@@ -50,14 +51,14 @@ const Login = () => {
       };
 
       setUser(userDetails);
-      console.log("accesss token is=", response.data.data.accessToken);
       localStorage.setItem("accessToken", response.data.data.accessToken);
 
       alert("User is logged in successfully..!!");
+      navigate("/profile", { replace: true });
     } catch (error) {
       console.log("Error occured while login the user ", error);
     } finally {
-      setLoading(false); // ✅ stop loading
+      setLoading(false); //stop loading
     }
   };
 
@@ -97,7 +98,7 @@ const Login = () => {
             />
           </div>
 
-          {/* ✅ Only Button Styling Updated */}
+          {/* Only Button Styling Updated */}
           <button
             type="submit"
             disabled={loading}
