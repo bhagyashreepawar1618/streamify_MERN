@@ -7,18 +7,14 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
   //access token from cookies
   //we've set cookies at the time of login
 
-  console.log("origin=", process.env.PORT);
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
 
     //if token is not there throw an error
 
-    console.log("token is=", token);
-
     if (!token) {
       throw new ApiError(401, "Unauthorized request");
     }
-    console.log("token is =", token);
     //if token is present
     //verify compare accesstoken secret present in cookie and in our server
     //and returns info that we've set at the time of token creation
