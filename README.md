@@ -1,10 +1,36 @@
-# 📺 YouTube Clone – Full Stack Mega Project
+# 📺 Streamify – Full Stack Mega Project
 
-A full-stack **YouTube Clone** application built as a learning-focused mega project.  
+A full-stack **Video Streaming** application built as a learning-focused mega project.  
 This project replicates core YouTube functionalities using modern web technologies and real-world backend architecture.
 
 > 🚧 Status: Project is under active development. New features are being added regularly.
 ---
+
+
+## 🚀 Features
+
+### 🔐 Authentication System
+- User Registration using JWT
+- Login using Access Tokens
+- Password hashing using bcrypt
+- Secure authentication flow
+
+
+- 🔐 JWT-based Authentication (Login/Signup)
+- 📹 Video Upload & Streaming System
+- 🧠 Watch History Tracking (Personalized user experience)
+- 👤 User Profiles with channel-like structure
+- 🔔 Subscription System (Follow creators)
+- 📂 RESTful API architecture
+- 🌐 Fully deployed (Frontend + Backend)
+
+## 🛠️ Tech Stack
+
+- Frontend: React.js,axios
+- Backend: Node.js, Express.js
+- Database: MongoDB
+- Authentication: JWT
+- Storage: (multer, Cloudinary)
 
 ## 🌍 Live Demo
 
@@ -20,81 +46,8 @@ screenshots
 <img width="1871" height="873" alt="image" src="https://github.com/user-attachments/assets/80265d52-d037-4f77-8d46-b62ade39c18a" />
 <img width="1900" height="858" alt="image" src="https://github.com/user-attachments/assets/956be0c6-59c7-47ce-97a2-6dadcf00764b" />
 
-
-
-
-
-## 🚀 Tech Stack
-
-### 🖥 Frontend
-- React.js
-- JavaScript (ES6+)
-- HTML5
-- Tailwind CSS
-- Axios
-
-### ⚙ Backend
-- Node.js
-- Express.js
-- REST APIs
-
-### 🗄 Database
-- MongoDB
-
-### 🔐 Authentication & Security
-- JWT (JSON Web Token)
-- Access Tokens
-- bcrypt (Password Hashing)
-- Protected Routes
-
-### ☁ Media Storage
-- Cloudinary (Image & Video Storage)
-
 ---
 
-## ✨ Features Implemented
-
-### 🔐 Authentication System
-- User Registration using JWT
-- Login using Access Tokens
-- Password hashing using bcrypt
-- Secure authentication flow
-
-### 👤 User Features
-- Update user information
-- Change password
-- View watch history
-- View other user profiles
-
-### 🎥 Video Features
-- Upload videos (Cloudinary integration)
-- Delete videos
-- Watch videos
-- Video storage on Cloudinary
-
-### 📺 Channel & Subscription
-- Subscribe to other users
-- View subscriber & following count
-
-### ❤️ Likes
-- Like functionality (Currently under development 🚧)
-
----
-
-## 🔮 Planned Features (Coming Soon)
-
-- Comment system
-- Full like/dislike system
-- Video search optimization
-- Notifications system
-- Playlist creation
-- Video recommendations
-- Dark / Light mode toggle
-- Admin panel
-- Performance optimization
-- Deployment improvements
-
----
 ## 📂 Project Structure
 
 ```
