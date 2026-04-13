@@ -66,7 +66,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f]">
       <div className="w-full max-w-md p-8 rounded-2xl shadow-2xl bg-[#1a1a1a] border border-red-900/40 backdrop-blur-lg">
         <h2 className="text-3xl font-bold text-center text-red-600 mb-6 tracking-wide">
-          YouTube Clone
+          Streamify
         </h2>
 
         <p className="text-gray-400 text-center mb-8">Login to continue</p>

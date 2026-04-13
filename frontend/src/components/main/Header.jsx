@@ -6,7 +6,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
         <h1 className="text-2xl font-bold text-red-600 tracking-wide">
-          YouTube Clone
+          Streamify
         </h1>
 
         {/* Navigation */}
